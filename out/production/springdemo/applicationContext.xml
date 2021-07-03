@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 	xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 	http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <bean id="demo" class="com.gh.Demo"/>
+    <context:annotation-config/>
+    <context:component-scan base-package="com.gh"/>
+    <bean class="com.gh.User" id="user" p:name="zhangsan"/>
+
+    <bean class="com.gh.Coll" id="coll">
+        <property name="map">
+            <map key-type="java.lang.String" value-type="java.lang.String">
+                <entry key="name" value="zhangsan"></entry>
+                <entry key="age" value="23"/>
+            </map>
+        </property>
+    </bean>
+    <bean class="com.gh.UserDao" id="userDao"/>
+    <bean class="com.gh.UserDaoHelper" id="userDaoHelper"/>
+
+    <aop:config>
+        <!--expression切点表达式
+        execution指定切入的方法路径
+        第一个*代表 返回值类型,任意返回值
+        第二个*代表 当前包下面任意类
+        .. 任意参数
+        -->
+        <aop:pointcut id="addCut" expression="execution(* com.gh.*.add(..))"/>
+        <!--通知-->
+        <aop:advisor advice-ref="userDaoHelper" pointcut-ref="addCut"/>
+    </aop:config>
+</beans>
