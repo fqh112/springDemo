@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
     <bean id="demo" class="com.gh.Demo"/>
     <context:annotation-config/>
-    <context:component-scan base-package="com.gh"/>
+    <context:component-scan base-package="com.gh.dao"/>
     <bean class="com.gh.User" id="user" p:name="zhangsan"/>
 
     <bean class="com.gh.Coll" id="coll">
@@ -21,16 +21,25 @@
     </bean>
     <bean class="com.gh.UserDao" id="userDao"/>
     <bean class="com.gh.UserDaoHelper" id="userDaoHelper"/>
+    <aop:aspectj-autoproxy/>
 
+<!--    <aop:config>-->
+<!--        &lt;!&ndash;expression切点表达式-->
+<!--        execution指定切入的方法路径-->
+<!--        第一个*代表 返回值类型,任意返回值-->
+<!--        第二个*代表 当前包下面任意类-->
+<!--        .. 任意参数-->
+<!--        &ndash;&gt;-->
+<!--        <aop:pointcut id="addCut" expression="execution(* com.gh.*.add(..))"/>-->
+<!--        &lt;!&ndash;通知&ndash;&gt;-->
+<!--        <aop:advisor advice-ref="userDaoHelper" pointcut-ref="addCut"/>-->
+<!--    </aop:config>-->
+    <bean class="com.gh.Helper" id="helper"/>
     <aop:config>
-        <!--expression切点表达式
-        execution指定切入的方法路径
-        第一个*代表 返回值类型,任意返回值
-        第二个*代表 当前包下面任意类
-        .. 任意参数
-        -->
-        <aop:pointcut id="addCut" expression="execution(* com.gh.*.add(..))"/>
-        <!--通知-->
-        <aop:advisor advice-ref="userDaoHelper" pointcut-ref="addCut"/>
+        <aop:aspect ref="helper">
+            <aop:pointcut id="addCut" expression="execution(* com.gh.*.add(..))"/>
+            <aop:before method="before" pointcut-ref="addCut"/>
+            <aop:after method="after" pointcut-ref="addCut"/>
+        </aop:aspect>
     </aop:config>
 </beans>
